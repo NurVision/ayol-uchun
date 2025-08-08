@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from jazzmin_conf import JAZZMIN_SETTINGS
 
 from dotenv import load_dotenv
 
@@ -20,7 +21,7 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    "apps.common"
+
 ]
 
 EXTERNAL_APPS = []
@@ -124,7 +125,7 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": f"{REDIS_HOST}:{REDIS_PORT}",
-        "KEY_PREFIX": "boilerplate",  # todo: you must change this with your project name or something else
+        "KEY_PREFIX": "core",  # todo: you must change this with your project name or something else
     }
 }
 

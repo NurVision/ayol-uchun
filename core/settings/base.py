@@ -26,7 +26,7 @@ LOCAL_APPS = [
     "apps.courses",
 ]
 
-EXTERNAL_APPS = ["daphne", "jazzmin", "rest_framework", "drf_yasg"]
+EXTERNAL_APPS = ["daphne", "jazzmin", "rest_framework", "drf_yasg", "rest_framework_simplejwt"]
 
 INSTALLED_APPS = LOCAL_APPS + EXTERNAL_APPS + DJANGO_APPS
 
@@ -75,7 +75,12 @@ DATABASES = {
 
 AUTH_USER_MODEL = "users.User"
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication', 
+    )
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

@@ -1,35 +1,30 @@
-# Stage 1: Builder with uv
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
+FROM ghcr.io/astral-sh/uv:python3.12-alpine
 
-ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
-
+# Set working directory
 WORKDIR /app
 
-# Cache uv packages
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    uv sync --frozen --no-install-project --no-dev
-
-# Copy rest of project
-ADD . /app
-
-# Finalize install
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev
-
-
-# Stage 2: Production/Final image
-FROM python:3.12-slim-bookworm
-
-# Set workdir
-WORKDIR /app
-
-# Copy from builder
-COPY --from=builder --chown=app:app /app /app
-
-# Add venv to PATH
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Set entrypoint default (Django dev server for local)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Use non-root user for security
+RUN adduser -D appuser
+USER appuser
+
+# Copy only pyproject and lock first for caching
+COPY --chown=appuser:appuser pyproject.toml uv.lock ./
+
+# Install production dependencies only
+RUN --mount=type=cache,target=/home/appuser/.cache/uv \
+    uv sync --locked --no-install-project --no-dev
+
+# Copy full application
+COPY --chown=appuser:appuser . .
+
+# Install the project (editable install or not)
+RUN --mount=type=cache,target=/home/appuser/.cache/uv \
+    uv sync --locked --no-dev
+
+# Entrypoint is defined in docker-compose
+ENTRYPOINT []

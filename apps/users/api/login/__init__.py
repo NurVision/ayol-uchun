@@ -1,1 +1,1 @@
-from .views import CustomTokenObtainPairView
+from .views import CustomTokenObtainPairView #noqa

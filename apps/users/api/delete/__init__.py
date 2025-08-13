@@ -1,1 +1,1 @@
-from .views import UserDeleteView
+from .views import UserDeleteView #noqa

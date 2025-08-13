@@ -1,1 +1,1 @@
-from .views import UserConfirmView
+from .views import UserConfirmView #noqa

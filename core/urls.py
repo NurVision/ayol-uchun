@@ -25,6 +25,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/common/", include("apps.common.urls", namespace="common")),
     path('api/v1/users/', include(('apps.users.urls', 'users'), namespace='users-api')),
+
+    path('api/v1/payments', include('apps.payments.urls', namespace='payments-api')),
 ]
 
 urlpatterns += swagger_urlpatterns

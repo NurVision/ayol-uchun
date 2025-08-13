@@ -1,6 +1,9 @@
 from rest_framework import generics
+
 from apps.courses.models import Category
+
 from .serializers import CategorySerializer
+
 
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()

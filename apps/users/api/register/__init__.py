@@ -1,1 +1,1 @@
-from .views import UserRegisterView
+from .views import UserRegisterView #noqa

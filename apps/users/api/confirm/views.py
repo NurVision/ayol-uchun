@@ -1,10 +1,12 @@
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
 
 from apps.users.models import User
+
 from .serializers import UserConfirmSerializer
+
 
 class UserConfirmView(APIView):
     permission_classes = [AllowAny]
@@ -14,7 +16,7 @@ class UserConfirmView(APIView):
         serializer.is_valid(raise_exception=True)
         
         phone_number = serializer.validated_data['phone_number']
-        confirmation_code = serializer.validated_data['confirmation_code']
+        # confirmation_code = serializer.validated_data['confirmation_code']
         
         try:
             user = User.objects.get(phone_number=phone_number, is_confirmed=False)

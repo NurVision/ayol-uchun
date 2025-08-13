@@ -1,14 +1,14 @@
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
+
 from .api import (
     CustomTokenObtainPairView,
     UserConfirmView,
     UserDeleteView,
     UserProfileView,
     UserRegisterView,
-    UserUpdateView
+    UserUpdateView,
 )
-from rest_framework_simplejwt.views import TokenRefreshView
-
 
 app_name = 'users'  
 

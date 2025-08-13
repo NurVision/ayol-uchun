@@ -24,6 +24,7 @@ LOCAL_APPS = [
     "apps.users",
     "apps.news",
     "apps.courses",
+    "apps.payments"
 ]
 
 EXTERNAL_APPS = ["daphne", "jazzmin", "rest_framework", "drf_yasg", "rest_framework_simplejwt"]

@@ -1,1 +1,1 @@
-from .views import UserUpdateView
+from .views import UserUpdateView #noqa

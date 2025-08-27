@@ -13,10 +13,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
-            'avatar',
+            # 'avatar',
             'bio',
             'is_confirmed',
             'created_at',
             'updated_at',
         ]
         read_only_fields = ['id', 'phone_number', 'is_confirmed', 'created_at', 'updated_at']
+

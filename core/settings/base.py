@@ -3,6 +3,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from .dev import DEBUG  #noqa
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent

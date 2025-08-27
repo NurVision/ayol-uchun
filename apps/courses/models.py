@@ -11,6 +11,9 @@ class Course(BaseModel):
     price = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name=_("Price")
     )
+    old_price = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True, verbose_name=_("Old Price")
+    )
     card = models.FileField(
         upload_to="courses", null=True, blank=True, verbose_name=_("Card Image")
     )
@@ -20,11 +23,11 @@ class Course(BaseModel):
         related_name="courses",
         verbose_name=_("Category"),
     )
-    author = models.ForeignKey(
-        "users.User",
-        on_delete=models.RESTRICT,
-        related_name="courses",
-        verbose_name=_("Author"),
+    speaker = models.CharField(
+        max_length=255, verbose_name=_("Speaker")
+    )
+    discount_end = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("Discount End Time")
     )
     rating = models.FloatField(
         validators=[MinValueValidator(0), MaxValueValidator(5)],

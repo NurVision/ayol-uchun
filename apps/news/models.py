@@ -1,133 +1,149 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
 from apps.common.models import BaseModel
-from apps.news.choices import QuestionTypeChoices
+from apps.courses.models import Course
+from apps.news.enums import QuestionTypeChoices
+from apps.users.models import User
 
 
 class Post(BaseModel):
-    title = models.CharField(max_length=255, verbose_name=_("Title"))
-    description = models.TextField(verbose_name=_("Description"))
+    title = models.CharField(max_length=255, verbose_name="Title")
+    description = models.TextField(verbose_name="Description")
     card = models.ImageField(
-        upload_to="posts", null=True, blank=True, verbose_name=_("Card Image")
+        verbose_name="Card", upload_to="cards/", null=True, blank=True
+    )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Author", null=True, blank=True
     )
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = _("Post")
-        verbose_name_plural = _("Posts")
+        verbose_name = "Post"
+        verbose_name_plural = "Posts"
+        ordering = ("-created_at",)
 
 
 class Event(BaseModel):
-    title = models.CharField(max_length=255, verbose_name=_("Title"))
-    description = models.TextField(verbose_name=_("Description"))
+    title = models.CharField(max_length=255, verbose_name="Title")
+    description = models.TextField(verbose_name="Description", blank=True)
     card = models.ImageField(
-        upload_to="events", null=True, blank=True, verbose_name=_("Card Image")
+        verbose_name="Card", upload_to="cards/", null=True, blank=True
     )
-    datetime = models.DateTimeField(verbose_name=_("Datetime"))
-    location_name = models.CharField(max_length=255, verbose_name=_("Location Name"))
-    longitude = models.FloatField(verbose_name=_("Longitude"))
-    latitude = models.FloatField(verbose_name=_("Latitude"))
+    date = models.DateField(verbose_name="Date", blank=True)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Author", null=True, blank=True
+    )
+    location = models.CharField(max_length=255, verbose_name="Location", blank=True)
+    latitude = models.FloatField(verbose_name="Latitude", blank=True)
+    longitude = models.FloatField(verbose_name="Longitude", blank=True)
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = _("Event")
-        verbose_name_plural = _("Events")
+        verbose_name = "Event"
+        verbose_name_plural = "Events"
+        ordering = ("-created_at",)
 
 
 class Survey(BaseModel):
-    course = models.ForeignKey(
-        "courses.Course",
-        on_delete=models.SET_NULL,
-        related_name="surveys",
-        null=True,
-        blank=True,
-        verbose_name=_("Course"),
-    )
-    title = models.CharField(max_length=255, verbose_name=_("Title"))
-    description = models.TextField(verbose_name=_("Description"))
+    title = models.CharField(max_length=255, verbose_name="Title")
+    description = models.TextField(verbose_name="Description")
     card = models.ImageField(
-        upload_to="surveys", null=True, blank=True, verbose_name=_("Card Image")
+        verbose_name="Card", upload_to="cards/", null=True, blank=True
+    )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Author", null=True, blank=True
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        verbose_name="Course",
+        related_name="surveys",
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = _("Survey")
-        verbose_name_plural = _("Surveys")
+        verbose_name = "Survey"
+        verbose_name_plural = "Surveys"
+        ordering = ("-created_at",)
 
 
 class Question(BaseModel):
-    survey = models.ForeignKey(
-        "news.Survey",
-        on_delete=models.CASCADE,
-        related_name="questions",
-        verbose_name=_("Survey"),
-    )
-    title = models.CharField(max_length=255, verbose_name=_("Title"))
+    title = models.CharField(max_length=255, verbose_name="Title")
     type = models.CharField(
-        choices=QuestionTypeChoices.choices, max_length=30, verbose_name=_("Type")
+        choices=QuestionTypeChoices.choices, max_length=128, verbose_name="Type"
+    )
+    survey = models.ForeignKey(
+        Survey,
+        on_delete=models.CASCADE,
+        verbose_name="Survey",
+        related_name="questions",
     )
     file = models.FileField(
-        upload_to="questions", null=True, blank=True, verbose_name=_("File")
+        verbose_name="File", upload_to="files/", null=True, blank=True
     )
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = _("Question")
-        verbose_name_plural = _("Questions")
+        verbose_name = "Question"
+        verbose_name_plural = "Questions"
+        ordering = ("-created_at",)
 
 
 class QuestionOption(BaseModel):
     question = models.ForeignKey(
-        "news.Question",
+        Question,
         on_delete=models.CASCADE,
+        verbose_name="Question",
         related_name="options",
-        verbose_name=_("Question"),
     )
-    title = models.CharField(max_length=255, verbose_name=_("Title"))
+    title = models.CharField(max_length=255, verbose_name="Title")
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = _("Question Option")
-        verbose_name_plural = _("Question Options")
+        verbose_name = "QuestionOption"
+        verbose_name_plural = "QuestionOptions"
+        ordering = ("-created_at",)
 
 
 class Submission(BaseModel):
     user = models.ForeignKey(
-        "users.User",
+        User,
         on_delete=models.CASCADE,
+        verbose_name="User",
         related_name="submissions",
-        verbose_name=_("User"),
     )
     question = models.ForeignKey(
         Question,
         on_delete=models.CASCADE,
+        verbose_name="Question",
         related_name="submissions",
-        verbose_name=_("Question"),
     )
     chosen_option = models.ForeignKey(
-        "news.QuestionOption",
+        QuestionOption,
         on_delete=models.CASCADE,
+        verbose_name="Chosen Option",
+        related_name="submissions",
         null=True,
         blank=True,
-        related_name="submissions",
-        verbose_name=_("Chosen Option"),
     )
-    text_answer = models.TextField(null=True, blank=True, verbose_name=_("Text Answer"))
+    text = models.TextField(verbose_name="Text", null=True, blank=True)
 
     def __str__(self):
         return f"{self.user} - {self.question}"
 
     class Meta:
-        verbose_name = _("Submission")
-        verbose_name_plural = _("Submissions")
+        verbose_name = "Submission"
+        verbose_name_plural = "Submissions"
+        ordering = ("-created_at",)

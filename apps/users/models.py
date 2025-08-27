@@ -1,11 +1,11 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
-
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.users.choices import ReasonDeleteChoices
 from apps.common.models import BaseModel
+from apps.users.choices import ReasonDeleteChoices
+
 
 class User(AbstractUser, BaseModel):
     username = models.CharField(max_length=30, verbose_name=_("Username"))

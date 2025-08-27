@@ -1,4 +1,4 @@
-from django.db.models import TextChoices
+from django.db.models.enums import TextChoices
 
 
 class QuestionTypeChoices(TextChoices):

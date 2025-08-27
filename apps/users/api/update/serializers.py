@@ -11,7 +11,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
-            'avatar',
+            # 'avatar',
             'bio',
             'interests',
         ]
